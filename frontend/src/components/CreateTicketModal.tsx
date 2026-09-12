@@ -24,11 +24,12 @@ interface CreateTicketModalProps {
 }
 
 const TIPOS_CASO = [
-  'Hardware',
-  'Software',
+  'VideoBeams',
   'Red / Conectividad',
   'Impresoras / Periféricos',
   'Telefonía / Comunicaciones',
+  'Hardware',
+  'Software',
   'Otro',
 ];
 
@@ -55,7 +56,7 @@ export const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
 
   // State
   const [titulo, setTitulo] = useState('');
-  const [tipoCaso, setTipoCaso] = useState('Hardware');
+  const [tipoCaso, setTipoCaso] = useState('VideoBeams');
   const [bloque, setBloque] = useState(UBICACIONES_SUGERIDAS[0] || 'Bloque A');
   const [salon, setSalon] = useState('');
   const [descripcion, setDescripcion] = useState('');
@@ -215,22 +216,20 @@ export const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setSolicitanteModo('yo')}
-                    className={`px-2.5 py-1 text-xs rounded-lg font-medium transition ${
-                      solicitanteModo === 'yo'
-                        ? 'bg-blue-600 text-white shadow-sm'
-                        : 'text-slate-400 hover:text-white bg-slate-800'
-                    }`}
+                    className={`px-2.5 py-1 text-xs rounded-lg font-medium transition ${solicitanteModo === 'yo'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'text-slate-400 hover:text-white bg-slate-800'
+                      }`}
                   >
                     Para mí ({user?.nombre})
                   </button>
                   <button
                     type="button"
                     onClick={() => setSolicitanteModo('otro')}
-                    className={`px-2.5 py-1 text-xs rounded-lg font-medium transition ${
-                      solicitanteModo === 'otro'
-                        ? 'bg-blue-600 text-white shadow-sm'
-                        : 'text-slate-400 hover:text-white bg-slate-800'
-                    }`}
+                    className={`px-2.5 py-1 text-xs rounded-lg font-medium transition ${solicitanteModo === 'otro'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'text-slate-400 hover:text-white bg-slate-800'
+                      }`}
                   >
                     En nombre de otro colaborador
                   </button>
@@ -326,22 +325,20 @@ export const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setAsignadoModo('auto')}
-                    className={`px-2.5 py-1 text-xs rounded-lg font-medium transition ${
-                      asignadoModo === 'auto'
-                        ? 'bg-cyan-600 text-white shadow-sm'
-                        : 'text-slate-400 hover:text-white bg-slate-800'
-                    }`}
+                    className={`px-2.5 py-1 text-xs rounded-lg font-medium transition ${asignadoModo === 'auto'
+                      ? 'bg-cyan-600 text-white shadow-sm'
+                      : 'text-slate-400 hover:text-white bg-slate-800'
+                      }`}
                   >
                     Automática (Balanceo)
                   </button>
                   <button
                     type="button"
                     onClick={() => setAsignadoModo('manual')}
-                    className={`px-2.5 py-1 text-xs rounded-lg font-medium transition ${
-                      asignadoModo === 'manual'
-                        ? 'bg-cyan-600 text-white shadow-sm'
-                        : 'text-slate-400 hover:text-white bg-slate-800'
-                    }`}
+                    className={`px-2.5 py-1 text-xs rounded-lg font-medium transition ${asignadoModo === 'manual'
+                      ? 'bg-cyan-600 text-white shadow-sm'
+                      : 'text-slate-400 hover:text-white bg-slate-800'
+                      }`}
                   >
                     Asignar a técnico específico
                   </button>
