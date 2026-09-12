@@ -1,0 +1,21 @@
+# FastAPI & Server
+fastapi[standard]>=0.115.0
+uvicorn[standard]>=0.32.0
+
+# SQLAlchemy 2.0 + Async
+sqlalchemy[asyncio]>=2.0.36
+asyncpg>=0.30.0
+
+# Migrations
+alembic>=1.14.0
+
+# Settings & Environment
+pydantic-settings>=2.6.0
+python-dotenv>=1.0.0
+
+# Authentication
+python-jose[cryptography]>=3.3.0
+httpx>=0.28.0
+
+# Utilities
+python-multipart>=0.0.12
