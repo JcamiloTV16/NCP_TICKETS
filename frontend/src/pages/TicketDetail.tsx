@@ -20,8 +20,8 @@ import {
 } from 'lucide-react';
 
 const estadoBadge: Record<string, { bg: string; text: string; dot: string }> = {
-  Creado: { bg: 'bg-amber-500/10 border-amber-500/25', text: 'text-amber-400', dot: 'bg-amber-400' },
-  'En Ejecución': { bg: 'bg-blue-500/10 border-blue-500/25', text: 'text-blue-400', dot: 'bg-blue-400' },
+  Creado: { bg: 'bg-rose-500/10 border-rose-500/25', text: 'text-rose-400', dot: 'bg-rose-400' },
+  'En Ejecución': { bg: 'bg-amber-500/10 border-amber-500/25', text: 'text-amber-400', dot: 'bg-amber-400' },
   Solucionado: { bg: 'bg-emerald-500/10 border-emerald-500/25', text: 'text-emerald-400', dot: 'bg-emerald-400' },
 };
 
@@ -113,8 +113,8 @@ export const TicketDetail: React.FC = () => {
   const soporteUsers = usuarios.filter((u) => u.rol === 'Soporte' || u.rol === 'Administrador');
 
   return (
-    <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
-      {/* Back button */}
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
+      {/* Botón para volver */}
       <button
         onClick={() => navigate(isSoporteOrAdmin ? '/tickets' : '/mis-tickets')}
         className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition cursor-pointer"
@@ -123,7 +123,7 @@ export const TicketDetail: React.FC = () => {
         Volver a {isSoporteOrAdmin ? 'tickets' : 'mis tickets'}
       </button>
 
-      {/* Header */}
+      {/* Encabezado */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-3 mb-2">
@@ -133,21 +133,21 @@ export const TicketDetail: React.FC = () => {
               {ticket.estado}
             </span>
           </div>
-          <h1 className="text-xl font-bold text-white">{ticket.titulo}</h1>
+          <h1 className="text-xl font-bold text-white break-words">{ticket.titulo}</h1>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main content — left 2 cols */}
+        {/* Contenido principal — 2 columnas */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Description */}
-          <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-6">
+          {/* Descripción */}
+          <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-4 sm:p-6">
             <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Descripción</h2>
-            <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">{ticket.descripcion}</p>
+            <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap break-words">{ticket.descripcion}</p>
           </div>
 
-          {/* Comments */}
-          <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-6">
+          {/* Comentarios */}
+          <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-4 sm:p-6">
             <div className="flex items-center gap-2 mb-4">
               <MessageSquare className="h-4 w-4 text-slate-400" />
               <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
@@ -155,7 +155,7 @@ export const TicketDetail: React.FC = () => {
               </h2>
             </div>
 
-            {/* Comments list */}
+            {/* Lista de comentarios */}
             {loadingComments ? (
               <div className="flex items-center gap-2 py-4 text-slate-500 text-sm">
                 <Loader2 className="h-4 w-4 animate-spin" /> Cargando...
@@ -209,9 +209,9 @@ export const TicketDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Sidebar — right col */}
+        {/* Barra lateral — columna derecha */}
         <div className="space-y-4">
-          {/* Info card */}
+          {/* Tarjeta de detalles */}
           <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-5 space-y-4">
             <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Detalles</h2>
 
@@ -273,12 +273,12 @@ export const TicketDetail: React.FC = () => {
             </div>
           </div>
 
-          {/* Actions card (solo Soporte y Administrador) */}
+          {/* Tarjeta de acciones (solo Soporte y Administrador) */}
           {isSoporteOrAdmin && (
             <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-5 space-y-4">
               <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Acciones</h2>
 
-              {/* Change status */}
+              {/* Cambiar estado */}
               <div>
                 <label className="text-[11px] text-slate-500 uppercase block mb-1.5">Cambiar Estado</label>
                 <div className="flex gap-1.5 flex-wrap">
@@ -304,7 +304,7 @@ export const TicketDetail: React.FC = () => {
                 </div>
               </div>
 
-              {/* Reassign */}
+              {/* Reasignar técnico */}
               {soporteUsers.length > 0 && (
                 <div>
                   <label className="text-[11px] text-slate-500 uppercase block mb-1.5">Reasignar</label>

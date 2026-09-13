@@ -19,8 +19,8 @@ import {
 import { CreateTicketModal } from '../components/CreateTicketModal';
 
 const estadoBadge: Record<string, { bg: string; text: string; dot: string }> = {
-  Creado: { bg: 'bg-amber-500/10 border-amber-500/25', text: 'text-amber-400', dot: 'bg-amber-400' },
-  'En Ejecución': { bg: 'bg-blue-500/10 border-blue-500/25', text: 'text-blue-400', dot: 'bg-blue-400' },
+  Creado: { bg: 'bg-rose-500/10 border-rose-500/25', text: 'text-rose-400', dot: 'bg-rose-400' },
+  'En Ejecución': { bg: 'bg-amber-500/10 border-amber-500/25', text: 'text-amber-400', dot: 'bg-amber-400' },
   Solucionado: { bg: 'bg-emerald-500/10 border-emerald-500/25', text: 'text-emerald-400', dot: 'bg-emerald-400' },
 };
 
@@ -47,8 +47,8 @@ export const Dashboard: React.FC = () => {
 
   const metricCards = [
     { label: 'Total Tickets', value: metrics.total, icon: <Ticket className="h-5 w-5" />, color: 'from-slate-600 to-slate-500', textColor: 'text-slate-300' },
-    { label: 'Creados', value: metrics.creados, icon: <AlertCircle className="h-5 w-5" />, color: 'from-amber-600 to-amber-500', textColor: 'text-amber-400' },
-    { label: 'En Ejecución', value: metrics.enEjecucion, icon: <LoaderCircle className="h-5 w-5" />, color: 'from-blue-600 to-blue-500', textColor: 'text-blue-400' },
+    { label: 'Creados', value: metrics.creados, icon: <AlertCircle className="h-5 w-5" />, color: 'from-rose-600 to-rose-500', textColor: 'text-rose-400' },
+    { label: 'En Ejecución', value: metrics.enEjecucion, icon: <LoaderCircle className="h-5 w-5" />, color: 'from-amber-600 to-amber-500', textColor: 'text-amber-400' },
     { label: 'Solucionados', value: metrics.solucionados, icon: <CheckCircle2 className="h-5 w-5" />, color: 'from-emerald-600 to-emerald-500', textColor: 'text-emerald-400' },
   ];
 
@@ -64,8 +64,8 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="p-6 lg:p-8 space-y-8 max-w-7xl mx-auto">
-      {/* Header */}
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 max-w-7xl mx-auto">
+      {/* Encabezado */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">Dashboard</h1>
@@ -82,12 +82,12 @@ export const Dashboard: React.FC = () => {
         </button>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Tarjetas de métricas */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {metricCards.map((card) => (
           <div
             key={card.label}
-            className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-5 transition hover:border-slate-700/80"
+            className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-4 sm:p-5 transition hover:border-slate-700/80"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">{card.label}</span>
@@ -100,9 +100,9 @@ export const Dashboard: React.FC = () => {
         ))}
       </div>
 
-      {/* Distribution by Tipo de Caso */}
+      {/* Distribución por Tipo de Caso */}
       {tickets.length > 0 && (
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-6">
+        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-4 sm:p-6">
           <h2 className="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-4">Distribución por Tipo de Caso</h2>
           <div className="space-y-3">
             {Object.entries(
@@ -133,8 +133,8 @@ export const Dashboard: React.FC = () => {
         </div>
       )}
 
-      {/* Recent Tickets */}
-      <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-6">
+      {/* Tickets Recientes */}
+      <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold text-slate-200 uppercase tracking-wider">Tickets Recientes</h2>
           <button
@@ -158,20 +158,46 @@ export const Dashboard: React.FC = () => {
                 <button
                   key={t.id}
                   onClick={() => navigate(`/tickets/${t.id}`)}
-                  className="w-full flex items-center gap-4 rounded-xl px-4 py-3 text-left border border-transparent hover:border-slate-700/60 hover:bg-slate-800/40 transition-all duration-200 group"
+                  className="w-full flex items-start sm:items-center gap-3 sm:gap-4 rounded-xl p-3 sm:px-4 sm:py-3 text-left border border-slate-800/40 sm:border-transparent hover:border-slate-700/60 bg-slate-800/20 sm:bg-transparent hover:bg-slate-800/40 transition-all duration-200 group cursor-pointer"
                 >
-                  <div className="shrink-0 flex h-9 w-9 items-center justify-center rounded-lg bg-slate-800 text-slate-400 text-xs font-bold group-hover:bg-blue-600/15 group-hover:text-blue-400 transition">
+                  {/* ID del Ticket */}
+                  <div className="shrink-0 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-slate-800 text-slate-400 text-xs font-bold group-hover:bg-blue-600/15 group-hover:text-blue-400 transition mt-0.5 sm:mt-0">
                     #{t.id}
                   </div>
+
+                  {/* Contenedor principal de información */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-200 truncate">{t.titulo}</p>
-                    <div className="flex items-center gap-3 text-[11px] text-slate-500 mt-0.5">
-                      <span className="flex items-center gap-1"><User className="h-3 w-3" />{t.usuario.nombre}</span>
-                      <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{t.ubicacion}</span>
-                      <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{new Date(t.fecha_creacion).toLocaleDateString('es-CO')}</span>
+                    {/* Cabecera en móvil: Título e insignia de estado juntos */}
+                    <div className="flex items-center justify-between gap-2 sm:hidden mb-1">
+                      <p className="text-sm font-medium text-slate-200 truncate flex-1 min-w-0">{t.titulo}</p>
+                      <div className={`shrink-0 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${badge.bg} ${badge.text}`}>
+                        <span className={`h-1.5 w-1.5 rounded-full ${badge.dot}`} />
+                        {t.estado}
+                      </div>
+                    </div>
+
+                    {/* Título en pantallas medianas y escritorio */}
+                    <p className="hidden sm:block text-sm font-medium text-slate-200 truncate">{t.titulo}</p>
+
+                    {/* Metadatos (usuario, ubicación, fecha) con truncado y wrap */}
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-400 sm:text-slate-500 mt-0.5">
+                      <span className="inline-flex items-center gap-1 min-w-0 max-w-[140px] sm:max-w-none truncate" title={t.usuario.nombre}>
+                        <User className="h-3 w-3 shrink-0 text-slate-500" />
+                        <span className="truncate">{t.usuario.nombre}</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 min-w-0 max-w-[130px] sm:max-w-none truncate" title={t.ubicacion}>
+                        <MapPin className="h-3 w-3 shrink-0 text-slate-500" />
+                        <span className="truncate">{t.ubicacion}</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 shrink-0">
+                        <Clock className="h-3 w-3 shrink-0 text-slate-500" />
+                        <span>{new Date(t.fecha_creacion).toLocaleDateString('es-CO')}</span>
+                      </span>
                     </div>
                   </div>
-                  <div className={`shrink-0 flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${badge.bg} ${badge.text}`}>
+
+                  {/* Insignia de estado en escritorio */}
+                  <div className={`hidden sm:inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold ${badge.bg} ${badge.text}`}>
                     <span className={`h-1.5 w-1.5 rounded-full ${badge.dot}`} />
                     {t.estado}
                   </div>

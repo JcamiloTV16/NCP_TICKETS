@@ -37,8 +37,8 @@ import {
 import { CreateTicketModal } from '../components/CreateTicketModal';
 
 const estadoBadge: Record<string, { bg: string; text: string; dot: string }> = {
-  Creado: { bg: 'bg-amber-500/10 border-amber-500/25', text: 'text-amber-400', dot: 'bg-amber-400' },
-  'En Ejecución': { bg: 'bg-blue-500/10 border-blue-500/25', text: 'text-blue-400', dot: 'bg-blue-400' },
+  Creado: { bg: 'bg-rose-500/10 border-rose-500/25', text: 'text-rose-400', dot: 'bg-rose-400' },
+  'En Ejecución': { bg: 'bg-amber-500/10 border-amber-500/25', text: 'text-amber-400', dot: 'bg-amber-400' },
   Solucionado: { bg: 'bg-emerald-500/10 border-emerald-500/25', text: 'text-emerald-400', dot: 'bg-emerald-400' },
 };
 
@@ -211,8 +211,8 @@ export const MyTickets: React.FC = () => {
   }
 
   return (
-    <div className="p-6 lg:p-8 space-y-8 max-w-7xl mx-auto">
-      {/* Header */}
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 max-w-7xl mx-auto">
+      {/* Encabezado */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
@@ -234,9 +234,9 @@ export const MyTickets: React.FC = () => {
         </button>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-5">
+      {/* Tarjetas de métricas */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Registrados</span>
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
@@ -247,7 +247,7 @@ export const MyTickets: React.FC = () => {
           <p className="mt-1 text-xs text-slate-500">Historial completo de solicitudes</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-5">
+        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">En Atención / Pendientes</span>
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
@@ -260,7 +260,7 @@ export const MyTickets: React.FC = () => {
           </p>
         </div>
 
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-5">
+        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Solucionados</span>
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -272,9 +272,9 @@ export const MyTickets: React.FC = () => {
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
+      {/* Barra de búsqueda y filtros */}
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-        {/* Search */}
+        {/* Búsqueda */}
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
           <input
@@ -286,7 +286,7 @@ export const MyTickets: React.FC = () => {
           />
         </div>
 
-        {/* Estado Filter Tabs */}
+        {/* Pestañas de filtro por estado */}
         <div className="flex gap-1.5 overflow-x-auto pb-1 sm:pb-0">
           {ESTADOS_FILTER.map((estado) => {
             const isActive = estadoFilter === estado;
@@ -307,7 +307,7 @@ export const MyTickets: React.FC = () => {
         </div>
       </div>
 
-      {/* Table Card */}
+      {/* Tarjeta de tabla de tickets */}
       <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 overflow-hidden shadow-xl shadow-black/20">
         {filteredTickets.length === 0 ? (
           <div className="p-12 text-center">

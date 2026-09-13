@@ -4,7 +4,11 @@ import type { GoogleLoginRequest, TokenResponse, Usuario } from '../types';
 export const authService = {
   loginWithGoogle: async (googleToken: string): Promise<TokenResponse> => {
     const payload: GoogleLoginRequest = { google_token: googleToken };
-    const { data } = await api.post<TokenResponse>('/auth/google', payload);
+    const { data } = await api.post<TokenResponse>('/auth/google', payload, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     return data;
   },
 

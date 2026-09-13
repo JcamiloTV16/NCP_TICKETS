@@ -33,8 +33,8 @@ import {
 import { CreateTicketModal } from '../components/CreateTicketModal';
 
 const estadoBadge: Record<string, { bg: string; text: string; dot: string }> = {
-  Creado: { bg: 'bg-amber-500/10 border-amber-500/25', text: 'text-amber-400', dot: 'bg-amber-400' },
-  'En Ejecución': { bg: 'bg-blue-500/10 border-blue-500/25', text: 'text-blue-400', dot: 'bg-blue-400' },
+  Creado: { bg: 'bg-rose-500/10 border-rose-500/25', text: 'text-rose-400', dot: 'bg-rose-400' },
+  'En Ejecución': { bg: 'bg-amber-500/10 border-amber-500/25', text: 'text-amber-400', dot: 'bg-amber-400' },
   Solucionado: { bg: 'bg-emerald-500/10 border-emerald-500/25', text: 'text-emerald-400', dot: 'bg-emerald-400' },
 };
 
@@ -189,8 +189,8 @@ export const TicketList: React.FC = () => {
   }
 
   return (
-    <div className="p-6 lg:p-8 space-y-6 max-w-full mx-auto">
-      {/* Header */}
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-full mx-auto">
+      {/* Encabezado */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">Gestión de Tickets</h1>
@@ -205,9 +205,9 @@ export const TicketList: React.FC = () => {
         </button>
       </div>
 
-      {/* Filters bar */}
+      {/* Barra de filtros */}
       <div className="flex flex-col sm:flex-row gap-3">
-        {/* Search */}
+        {/* Búsqueda */}
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
           <input
@@ -219,14 +219,14 @@ export const TicketList: React.FC = () => {
           />
         </div>
 
-        {/* Estado filter pills */}
-        <div className="flex items-center gap-1 bg-slate-900/60 rounded-xl border border-slate-800/80 p-1">
+        {/* Filtros rápidos por estado */}
+        <div className="flex items-center gap-1 bg-slate-900/60 rounded-xl border border-slate-800/80 p-1 overflow-x-auto max-w-full">
           <Filter className="h-4 w-4 text-slate-500 mx-2 shrink-0" />
           {ESTADOS_FILTER.map((estado) => (
             <button
               key={estado}
               onClick={() => setEstadoFilter(estado)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium whitespace-nowrap transition ${
                 estadoFilter === estado
                   ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent'
@@ -238,7 +238,7 @@ export const TicketList: React.FC = () => {
         </div>
       </div>
 
-      {/* Table */}
+      {/* Tabla de tickets */}
       <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 overflow-hidden">
         {table.getRowModel().rows.length === 0 ? (
           <div className="text-center py-16 text-sm text-slate-500">
