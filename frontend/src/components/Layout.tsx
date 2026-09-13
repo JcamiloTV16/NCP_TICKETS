@@ -159,6 +159,10 @@ export const Layout: React.FC = () => {
 
       {/* Sidebar — Mobile */}
       <aside
+        style={{
+          paddingTop: 'env(safe-area-inset-top, 0px)',
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        }}
         className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-slate-800/80 bg-slate-900 transition-transform duration-300 lg:hidden ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
@@ -175,21 +179,31 @@ export const Layout: React.FC = () => {
       {/* Main content */}
       <div className="flex flex-1 flex-col min-w-0">
         {/* Mobile top bar */}
-        <header className="flex items-center justify-between h-14 px-4 border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-xl lg:hidden">
-          <button onClick={() => setMobileOpen(true)} className="p-1.5 text-slate-400 hover:text-white">
+        <header
+          style={{
+            paddingTop: 'env(safe-area-inset-top, 0px)',
+          }}
+          className="flex items-center justify-between min-h-[3.5rem] px-4 border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-xl lg:hidden select-none"
+        >
+          <button onClick={() => setMobileOpen(true)} className="p-1.5 text-slate-400 hover:text-white" aria-label="Abrir menú">
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2">
             <img src={ncpLogo} alt="NCP" className="h-7 w-7" />
-            <span className="text-sm font-bold text-white">NCP Tickets</span>
+            <span className="text-sm font-bold text-white tracking-wide">NCP Tickets</span>
           </div>
-          <button onClick={handleLogout} className="p-1.5 text-slate-400 hover:text-rose-400">
+          <button onClick={handleLogout} className="p-1.5 text-slate-400 hover:text-rose-400" aria-label="Cerrar sesión">
             <LogOut className="h-5 w-5" />
           </button>
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-auto">
+        <main
+          style={{
+            paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 16px)',
+          }}
+          className="flex-1 overflow-auto"
+        >
           <Outlet />
         </main>
       </div>
