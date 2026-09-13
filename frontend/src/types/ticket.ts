@@ -13,7 +13,11 @@ export interface Ticket {
   asignado_a: number | null;
   fecha_creacion: string;
   fecha_modificacion: string;
+  fecha_primera_respuesta: string | null;
   fecha_solucion: string | null;
+  calificacion: number | null;
+  comentario_calificacion: string | null;
+  fecha_calificacion: string | null;
   usuario: Usuario;
   asignado: Usuario | null;
 }
@@ -26,7 +30,9 @@ export interface TicketListItem {
   estado: EstadoTicket;
   fecha_creacion: string;
   fecha_modificacion: string;
+  fecha_primera_respuesta: string | null;
   fecha_solucion: string | null;
+  calificacion: number | null;
   usuario: Usuario;
   asignado: Usuario | null;
 }
@@ -49,6 +55,11 @@ export interface TicketUpdate {
   asignado_a?: number | null;
 }
 
+export interface TicketCalificacionCreate {
+  calificacion: number;
+  comentario?: string;
+}
+
 export interface TicketFilterParams {
   estado?: EstadoTicket | 'TODOS';
   tipo_caso?: string;
@@ -60,4 +71,31 @@ export interface DashboardMetrics {
   creados: number;
   enEjecucion: number;
   solucionados: number;
+}
+
+export interface CategoriaTiempo {
+  tipo_caso: string;
+  promedio_solucion_minutos: number;
+  promedio_respuesta_minutos: number;
+  total_tickets: number;
+}
+
+export interface TestimonioSatisfaccion {
+  ticket_id: number;
+  titulo_ticket: string;
+  usuario_nombre: string;
+  calificacion: number;
+  comentario: string | null;
+  fecha: string;
+}
+
+export interface SupportAnalytics {
+  tiempo_promedio_primera_respuesta_minutos: number;
+  tiempo_promedio_solucion_minutos: number;
+  tiempos_por_categoria: CategoriaTiempo[];
+  promedio_satisfaccion: number;
+  total_encuestas: number;
+  distribucion_estrellas: Record<string, number>;
+  porcentaje_satisfaccion: number;
+  ultimos_testimonios: TestimonioSatisfaccion[];
 }

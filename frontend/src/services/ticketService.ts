@@ -1,5 +1,12 @@
 import api from './api';
-import type { Ticket, TicketCreate, TicketListItem, TicketUpdate } from '../types';
+import type {
+  Ticket,
+  TicketCreate,
+  TicketListItem,
+  TicketUpdate,
+  TicketCalificacionCreate,
+  SupportAnalytics,
+} from '../types';
 
 export interface DashboardQueryParams {
   estado?: string;
@@ -39,6 +46,16 @@ export const ticketService = {
 
   createTicket: async (payload: TicketCreate): Promise<Ticket> => {
     const { data } = await api.post<Ticket>('/tickets', payload);
+    return data;
+  },
+
+  calificarTicket: async (id: number, payload: TicketCalificacionCreate): Promise<Ticket> => {
+    const { data } = await api.post<Ticket>(`/tickets/${id}/calificar`, payload);
+    return data;
+  },
+
+  getSupportAnalytics: async (): Promise<SupportAnalytics> => {
+    const { data } = await api.get<SupportAnalytics>('/tickets/analytics/support');
     return data;
   },
 };

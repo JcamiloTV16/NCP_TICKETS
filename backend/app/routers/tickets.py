@@ -16,6 +16,8 @@ from app.schemas.ticket import (
     TicketListResponse,
     TicketResponse,
     TicketUpdate,
+    TicketCalificacionCreate,
+    SupportAnalyticsResponse,
 )
 from app.services import ticket_service
 
@@ -76,6 +78,37 @@ async def dashboard_tickets(
         db=db, estado=estado, tipo_caso=tipo_caso
     )
     return tickets
+
+
+@router.get(
+    "/analytics/support",
+    response_model=SupportAnalyticsResponse,
+    summary="Analíticas de soporte",
+    description="Calcula tiempos promedio de respuesta, solución y métricas de satisfacción.",
+)
+async def get_support_analytics(
+    current_user: Annotated[Usuario, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    return await ticket_service.get_support_analytics(db=db)
+
+
+@router.post(
+    "/{ticket_id}/calificar",
+    response_model=TicketResponse,
+    summary="Calificar atención del ticket",
+    description="Registra la calificación de satisfacción (1-5 estrellas) y comentario del usuario.",
+)
+async def calificar_ticket(
+    ticket_id: int,
+    data: TicketCalificacionCreate,
+    current_user: Annotated[Usuario, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    ticket = await ticket_service.calificar_ticket(
+        db=db, ticket_id=ticket_id, usuario_id=current_user.id, data=data
+    )
+    return ticket
 
 
 @router.get(

@@ -5,7 +5,7 @@ Modelo ORM para la tabla `tickets`.
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, String, Text, func
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -22,6 +22,10 @@ class Ticket(Base):
         CheckConstraint(
             "estado IN ('Creado', 'En Ejecución', 'Solucionado')",
             name="ck_tickets_estado",
+        ),
+        CheckConstraint(
+            "calificacion IS NULL OR (calificacion >= 1 AND calificacion <= 5)",
+            name="ck_tickets_calificacion",
         ),
     )
 
@@ -49,7 +53,21 @@ class Ticket(Base):
     fecha_modificacion: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+    fecha_primera_respuesta: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     fecha_solucion: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+
+    # Encuesta de satisfacción (1 a 5 estrellas)
+    calificacion: Mapped[int | None] = mapped_column(
+        Integer, nullable=True
+    )
+    comentario_calificacion: Mapped[str | None] = mapped_column(
+        Text, nullable=True
+    )
+    fecha_calificacion: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
 

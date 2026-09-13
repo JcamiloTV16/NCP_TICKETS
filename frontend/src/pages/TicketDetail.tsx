@@ -17,6 +17,7 @@ import {
   AlertCircle,
   MessageSquare,
   Calendar,
+  Star,
 } from 'lucide-react';
 
 const estadoBadge: Record<string, { bg: string; text: string; dot: string }> = {
@@ -31,16 +32,31 @@ export const TicketDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const ticketId = Number(id);
   const navigate = useNavigate();
-  const { isSoporteOrAdmin } = useAuth();
+  const { user, isSoporteOrAdmin } = useAuth();
   const queryClient = useQueryClient();
 
   const [newComment, setNewComment] = useState('');
+  const [rating, setRating] = useState<number>(0);
+  const [hoverRating, setHoverRating] = useState<number>(0);
+  const [ratingComment, setRatingComment] = useState<string>('');
 
   // Fetch ticket
   const { data: ticket, isLoading: loadingTicket } = useQuery<Ticket>({
     queryKey: ['ticket', ticketId],
     queryFn: () => ticketService.getTicketById(ticketId),
     enabled: !isNaN(ticketId),
+  });
+
+  // Mutación para calificar ticket
+  const ratingMutation = useMutation({
+    mutationFn: (payload: { calificacion: number; comentario?: string }) =>
+      ticketService.calificarTicket(ticketId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ticket', ticketId] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-tickets'] });
+      queryClient.invalidateQueries({ queryKey: ['support-analytics'] });
+      queryClient.invalidateQueries({ queryKey: ['my-tickets'] });
+    },
   });
 
   // Fetch comments
@@ -145,6 +161,145 @@ export const TicketDetail: React.FC = () => {
             <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Descripción</h2>
             <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap break-words">{ticket.descripcion}</p>
           </div>
+
+          {/* Encuesta de Satisfacción (solo en tickets Solucionados) */}
+          {ticket.estado === 'Solucionado' && (
+            <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-b from-amber-500/5 to-slate-900/70 p-4 sm:p-6 space-y-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <Star className="h-5 w-5 fill-amber-400/20" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-semibold text-slate-100">Encuesta de Satisfacción</h2>
+                    <p className="text-xs text-slate-400">Califica la atención y servicio recibido</p>
+                  </div>
+                </div>
+                {ticket.calificacion && (
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full">
+                    {ticket.calificacion} / 5
+                  </span>
+                )}
+              </div>
+
+              {ticket.calificacion ? (
+                /* Calificación ya registrada */
+                <div className="rounded-xl bg-slate-950/40 border border-slate-800/80 p-4 space-y-2.5">
+                  <div className="flex items-center gap-1.5">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-5 w-5 ${
+                          star <= ticket.calificacion!
+                            ? 'text-amber-400 fill-amber-400'
+                            : 'text-slate-700'
+                        }`}
+                      />
+                    ))}
+                    <span className="ml-2 text-xs font-semibold text-amber-400">
+                      {ticket.calificacion === 5
+                        ? '¡Excelente servicio!'
+                        : ticket.calificacion === 4
+                        ? 'Buena atención'
+                        : ticket.calificacion === 3
+                        ? 'Aceptable'
+                        : ticket.calificacion === 2
+                        ? 'Regular'
+                        : 'Mala'}
+                    </span>
+                  </div>
+                  {ticket.comentario_calificacion && (
+                    <p className="text-xs text-slate-300 italic bg-slate-900/60 rounded-lg p-3 border border-slate-800">
+                      "{ticket.comentario_calificacion}"
+                    </p>
+                  )}
+                  {ticket.fecha_calificacion && (
+                    <p className="text-[11px] text-slate-500">
+                      Evaluado el {new Date(ticket.fecha_calificacion).toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' })}
+                    </p>
+                  )}
+                </div>
+              ) : (user?.id === ticket.usuario_id || user?.rol === 'Administrador') ? (
+                /* Formulario interactivo para calificar */
+                <div className="space-y-3.5 pt-1">
+                  <p className="text-xs text-slate-300">
+                    ¿Cómo calificarías la resolución y trato recibido en este ticket?
+                  </p>
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    {[1, 2, 3, 4, 5].map((star) => {
+                      const active = (hoverRating || rating) >= star;
+                      return (
+                        <button
+                          key={star}
+                          type="button"
+                          onMouseEnter={() => setHoverRating(star)}
+                          onMouseLeave={() => setHoverRating(0)}
+                          onClick={() => setRating(star)}
+                          className="p-1 rounded-lg hover:scale-110 transition-transform cursor-pointer focus:outline-none"
+                          title={`${star} estrella${star > 1 ? 's' : ''}`}
+                        >
+                          <Star
+                            className={`h-7 w-7 transition-colors ${
+                              active
+                                ? 'text-amber-400 fill-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]'
+                                : 'text-slate-600 hover:text-slate-500'
+                            }`}
+                          />
+                        </button>
+                      );
+                    })}
+                    {rating > 0 && (
+                      <span className="text-xs font-semibold text-amber-400 ml-2">
+                        {rating === 5 ? '¡Excelente!' : rating === 4 ? 'Buena' : rating === 3 ? 'Aceptable' : rating === 2 ? 'Regular' : 'Mala'}
+                      </span>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-slate-400 mb-1.5">
+                      Comentario o sugerencia sobre la atención (opcional)
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={ratingComment}
+                      onChange={(e) => setRatingComment(e.target.value)}
+                      placeholder="Escribe aquí tu opinión sobre el soporte brindado..."
+                      className="w-full rounded-xl border border-slate-700/80 bg-slate-950/60 p-3 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-amber-500/60 focus:ring-1 focus:ring-amber-500/20 transition resize-none"
+                    />
+                  </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      disabled={rating === 0 || ratingMutation.isPending}
+                      onClick={() =>
+                        ratingMutation.mutate({
+                          calificacion: rating,
+                          comentario: ratingComment.trim() || undefined,
+                        })
+                      }
+                      className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-xs font-semibold text-slate-950 hover:from-amber-400 hover:to-amber-500 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer shadow-lg shadow-amber-500/10"
+                    >
+                      {ratingMutation.isPending ? (
+                        <>
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" /> Guardando...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="h-3.5 w-3.5" /> Enviar Calificación
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* Mensaje para técnicos */
+                <p className="text-xs text-slate-500 italic">
+                  El usuario solicitante aún no ha calificado este ticket.
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Comentarios */}
           <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-4 sm:p-6">
@@ -267,6 +422,30 @@ export const TicketDetail: React.FC = () => {
                     <p className="text-sm text-emerald-400">
                       {new Date(ticket.fecha_solucion).toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' })}
                     </p>
+                  </div>
+                </div>
+              )}
+
+              {ticket.estado === 'Solucionado' && (
+                <div className="flex items-start gap-3">
+                  <Star className="h-4 w-4 text-amber-400 mt-0.5 shrink-0 fill-amber-400/20" />
+                  <div>
+                    <p className="text-[11px] text-slate-500 uppercase">Satisfacción</p>
+                    {ticket.calificacion ? (
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="text-sm font-bold text-amber-400">{ticket.calificacion} / 5</span>
+                        <div className="flex items-center text-amber-400">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star
+                              key={s}
+                              className={`h-3 w-3 ${s <= ticket.calificacion! ? 'fill-amber-400' : 'text-slate-700'}`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-slate-500 italic">Pendiente de calificar</p>
+                    )}
                   </div>
                 </div>
               )}
