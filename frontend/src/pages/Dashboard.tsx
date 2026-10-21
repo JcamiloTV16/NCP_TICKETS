@@ -109,7 +109,7 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Tarjetas de métricas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
         {metricCards.map((card) => (
           <div
             key={card.label}
@@ -128,7 +128,7 @@ export const Dashboard: React.FC = () => {
 
       {/* Analíticas Avanzadas: Tiempos de Soporte y Encuesta de Satisfacción */}
       {analytics && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Tarjeta 1: Tiempos de Respuesta y Resolución */}
           <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-4 sm:p-6 flex flex-col justify-between space-y-5">
             <div>
@@ -145,7 +145,7 @@ export const Dashboard: React.FC = () => {
               </div>
 
               {/* KPIs de tiempos */}
-              <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                 <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-3.5">
                   <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
                     <Zap className="h-3.5 w-3.5 text-amber-400" />

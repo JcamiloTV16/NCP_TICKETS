@@ -41,6 +41,21 @@ async def add_comment(
     db.add(comentario)
     await db.flush()
     await db.refresh(comentario)
+
+    # Notificar a la contraparte (solicitante o soporte asignado)
+    try:
+        from app.models.usuario import Usuario
+        from app.services import notification_service
+        res_user = await db.execute(select(Usuario).where(Usuario.id == usuario_id))
+        author_user = res_user.scalar_one_or_none()
+        if author_user:
+            await notification_service.notify_comment_added(
+                db=db, ticket=ticket, comment=comentario, author_user=author_user
+            )
+    except Exception as exc:
+        import logging
+        logging.getLogger("ncp_tickets").error(f"Error notificando nuevo comentario en ticket #{ticket_id}: {exc}")
+
     return comentario
 
 

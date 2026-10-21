@@ -40,6 +40,23 @@ class Settings(BaseSettings):
     APP_NAME: str = "NCP Tickets - Inversiones Oeding"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
+    FRONTEND_URL: str = "http://localhost:5173"
+
+    # --- Web Push (VAPID) ---
+    VAPID_PUBLIC_KEY: str = "BN-VDRsj9NeT02m0aUDunGAe4mp5z-HtKMmpGUcpHFcoZQ80aiaXrJS0Rn9irw67UlbTzImWEls3ANPOMc7qyeA"
+    VAPID_PRIVATE_KEY: str = ""
+    VAPID_PRIVATE_KEY_PATH: str = "vapid_private.pem"
+    VAPID_CLAIM_EMAIL: str = "mailto:soporte@nuevocolegiodelprado.edu.co"
+
+    # --- Email Notifications (SMTP) ---
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM_EMAIL: str = "soporte@nuevocolegiodelprado.edu.co"
+    SMTP_FROM_NAME: str = "NCP Tickets - Inversiones Oeding"
+    SMTP_TLS: bool = True
+    EMAIL_NOTIFICATIONS_ENABLED: bool = False
 
 
 @lru_cache

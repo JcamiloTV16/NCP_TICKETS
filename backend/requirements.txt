@@ -19,3 +19,7 @@ httpx>=0.28.0
 
 # Utilities
 python-multipart>=0.0.12
+
+# Notifications (Push & Email)
+pywebpush>=2.5.0
+aiosmtplib>=5.1.3

@@ -45,6 +45,15 @@ async def create_ticket(
     db.add(ticket)
     await db.flush()
     await db.refresh(ticket)
+
+    # Notificar al soporte asignado (Push, Correo, In-App)
+    try:
+        from app.services import notification_service
+        await notification_service.notify_ticket_created(db=db, ticket=ticket)
+    except Exception as exc:
+        import logging
+        logging.getLogger("ncp_tickets").error(f"Error notificando nuevo ticket #{ticket.id}: {exc}")
+
     return ticket
 
 
@@ -100,6 +109,7 @@ async def update_ticket(
             detail=f"Ticket con ID {ticket_id} no encontrado",
         )
 
+    old_estado = ticket.estado
     update_data = data.model_dump(exclude_unset=True)
     new_estado = update_data.get("estado")
     now = datetime.now(timezone.utc)
@@ -119,6 +129,18 @@ async def update_ticket(
 
     await db.flush()
     await db.refresh(ticket)
+
+    # Notificar al solicitante si cambió de estado
+    if new_estado and new_estado != old_estado:
+        try:
+            from app.services import notification_service
+            await notification_service.notify_ticket_status_changed(
+                db=db, ticket=ticket, old_status=old_estado, new_status=new_estado
+            )
+        except Exception as exc:
+            import logging
+            logging.getLogger("ncp_tickets").error(f"Error notificando cambio estado ticket #{ticket.id}: {exc}")
+
     return ticket
 
 

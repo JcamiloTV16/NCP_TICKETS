@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
-from app.routers import auth, comentarios, tickets, usuarios
+from app.routers import auth, comentarios, notificaciones, tickets, usuarios
 
 settings = get_settings()
 
@@ -53,6 +53,7 @@ app.include_router(auth.router, prefix=API_V1_PREFIX)
 app.include_router(tickets.router, prefix=API_V1_PREFIX)
 app.include_router(comentarios.router, prefix=API_V1_PREFIX)
 app.include_router(usuarios.router, prefix=API_V1_PREFIX)
+app.include_router(notificaciones.router, prefix=API_V1_PREFIX)
 
 
 # ─── Health Check ─────────────────────────────────────────────────────────────

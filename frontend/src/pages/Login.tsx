@@ -60,7 +60,7 @@ export const Login: React.FC = () => {
 
             <div className="flex items-center justify-center gap-2 text-xs font-semibold tracking-wider text-blue-400 uppercase">
               <Building2 className="h-3.5 w-3.5" />
-              Inversiones Oeding
+              Nuevo Colegio Del Prado
             </div>
 
             <h1 className="mt-2 text-2xl font-bold tracking-tight text-white">
@@ -103,7 +103,7 @@ export const Login: React.FC = () => {
           <div className="mt-6 border-t border-slate-800/80 pt-4 text-center">
             <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
               <ShieldCheck className="h-4 w-4 text-emerald-500/80" />
-              <span>Conectado a Neon PostgreSQL (Cloud Serverless)</span>
+              <span>Conectado a Neon PostgreSQL</span>
             </div>
           </div>
         </div>

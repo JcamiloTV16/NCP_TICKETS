@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import ncpLogo from '../assets/ncp-isotipo.svg';
 import { CreateTicketModal } from './CreateTicketModal';
+import { NotificationBell } from './NotificationBell';
 
 
 
@@ -192,9 +193,60 @@ export const Layout: React.FC = () => {
             <img src={ncpLogo} alt="NCP" className="h-7 w-7" />
             <span className="text-sm font-bold text-white tracking-wide">NCP Tickets</span>
           </div>
-          <button onClick={handleLogout} className="p-1.5 text-slate-400 hover:text-rose-400" aria-label="Cerrar sesión">
-            <LogOut className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-1.5">
+            <NotificationBell />
+            <button onClick={handleLogout} className="p-1.5 text-slate-400 hover:text-rose-400" aria-label="Cerrar sesión">
+              <LogOut className="h-5 w-5" />
+            </button>
+          </div>
+        </header>
+
+        {/* Desktop Top Header Bar */}
+        <header className="hidden lg:flex items-center justify-between h-16 px-6 sm:px-8 border-b border-slate-800/80 bg-slate-900/50 backdrop-blur-xl shrink-0 select-none">
+          {/* Status & Breadcrumb */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/60 border border-slate-700/40 text-xs text-slate-300">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="font-medium text-slate-400">Sistema en línea</span>
+              <span className="text-slate-600">|</span>
+              <span className="text-slate-300 font-medium">Inversiones Oeding</span>
+            </div>
+          </div>
+
+          {/* Quick Actions & Notifications & User Profile */}
+          <div className="flex items-center gap-3.5">
+            <NotificationBell align="right" />
+
+            <div className="h-5 w-px bg-slate-800" />
+
+            <div className="flex items-center gap-3 pl-1">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600/15 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase shadow-sm">
+                {user?.nombre ? user.nombre.slice(0, 2).toUpperCase() : 'US'}
+              </div>
+              <div className="text-left hidden xl:block">
+                <p className="text-xs font-semibold text-slate-200 leading-tight truncate max-w-[150px]">{user?.nombre}</p>
+                <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
+                  <Shield className="h-2.5 w-2.5 text-amber-400 shrink-0" />
+                  <span className="text-amber-400/90 font-medium">{user?.rol}</span>
+                  {user?.cargo && user.cargo !== 'Sin asignar' && (
+                    <>
+                      <span className="text-slate-600">•</span>
+                      <span className="text-slate-400 truncate max-w-[110px]">{user?.cargo}</span>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <button
+                onClick={handleLogout}
+                className="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition cursor-pointer"
+                title="Cerrar sesión"
+                aria-label="Cerrar sesión"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
         </header>
 
         {/* Page content */}
