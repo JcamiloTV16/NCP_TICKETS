@@ -6,7 +6,9 @@ Gestiona el ciclo de vida de PushSubscription y el envío cifrado mediante pyweb
 import asyncio
 import json
 import logging
+import re
 
+from py_vapid import Vapid
 from pywebpush import WebPushException, webpush
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,6 +19,41 @@ from app.schemas.notificacion import PushSubscriptionCreate
 
 logger = logging.getLogger("ncp_tickets.push")
 settings = get_settings()
+
+_vapid_instance: Vapid | None = None
+
+
+def _get_vapid() -> Vapid:
+    """
+    Carga la clave privada VAPID una sola vez. Soporta:
+    - Contenido PEM completo en VAPID_PRIVATE_KEY (con saltos reales o '\\n' escapados), p.ej. en Render.
+    - Clave en base64url (raw/DER) en VAPID_PRIVATE_KEY.
+    - Ruta a archivo .pem en VAPID_PRIVATE_KEY_PATH (desarrollo local).
+    """
+    global _vapid_instance
+    if _vapid_instance is not None:
+        return _vapid_instance
+
+    raw = (settings.VAPID_PRIVATE_KEY or "").strip().strip('"').strip("'")
+    if raw:
+        if "BEGIN" in raw:
+            # Normalizar PEM sin importar cómo se guardó (saltos reales, '\n' escapados o en una sola línea)
+            pem = raw.replace("\\n", "\n")
+            match = re.search(r"-----BEGIN ([A-Z ]+)-----(.*?)-----END \1-----", pem, re.DOTALL)
+            if not match:
+                raise ValueError("VAPID_PRIVATE_KEY parece PEM pero no tiene marcadores BEGIN/END válidos")
+            label, body = match.group(1), re.sub(r"\s+", "", match.group(2))
+            wrapped = "\n".join(body[i : i + 64] for i in range(0, len(body), 64))
+            pem = f"-----BEGIN {label}-----\n{wrapped}\n-----END {label}-----\n"
+            _vapid_instance = Vapid.from_pem(pem.encode())
+        else:
+            _vapid_instance = Vapid.from_string(private_key=raw)
+        logger.info("[PUSH] Clave VAPID cargada desde la variable VAPID_PRIVATE_KEY")
+    else:
+        _vapid_instance = Vapid.from_file(settings.VAPID_PRIVATE_KEY_PATH)
+        logger.info(f"[PUSH] Clave VAPID cargada desde archivo {settings.VAPID_PRIVATE_KEY_PATH}")
+
+    return _vapid_instance
 
 
 async def save_or_update_subscription(
@@ -96,8 +133,11 @@ async def send_push_notification_to_user(
         }
     )
 
-    claims = {"sub": settings.VAPID_CLAIM_EMAIL}
-    key_path = settings.VAPID_PRIVATE_KEY.strip() if settings.VAPID_PRIVATE_KEY else settings.VAPID_PRIVATE_KEY_PATH
+    try:
+        vapid_key = _get_vapid()
+    except Exception as exc:
+        logger.error(f"[PUSH ERROR] No se pudo cargar la clave privada VAPID: {exc}", exc_info=True)
+        return 0
 
     success_count = 0
     expired_endpoints: list[str] = []
@@ -117,8 +157,9 @@ async def send_push_notification_to_user(
                 webpush,
                 subscription_info=sub_info,
                 data=payload,
-                vapid_private_key=key_path,
-                vapid_claims=claims,
+                vapid_private_key=vapid_key,
+                # dict nuevo por envío: pywebpush añade 'aud' y 'exp' según el endpoint (Apple/Google/Mozilla)
+                vapid_claims={"sub": settings.VAPID_CLAIM_EMAIL},
                 ttl=3600 * 24,  # Guardar hasta 24h si el dispositivo está apagado
             )
             logger.info(
