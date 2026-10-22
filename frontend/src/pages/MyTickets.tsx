@@ -331,16 +331,16 @@ export const MyTickets: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="border-b border-slate-800 bg-slate-950/40 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <div className="overflow-x-auto max-h-[60vh] overflow-y-auto">
+            <table className="w-full text-left text-sm border-collapse">
+              <thead className="sticky top-0 z-10 border-b border-slate-800 bg-slate-900/95 backdrop-blur-md text-xs font-semibold text-slate-400 uppercase tracking-wider shadow-sm select-none">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
                       <th
                         key={header.id}
                         style={{ width: header.getSize() }}
-                        className={`px-4 py-3.5 ${
+                        className={`px-4 py-3.5 bg-slate-900/95 ${
                           header.column.getCanSort() ? 'cursor-pointer select-none hover:text-slate-200' : ''
                         }`}
                         onClick={header.column.getToggleSortingHandler()}
@@ -384,42 +384,59 @@ export const MyTickets: React.FC = () => {
 
         {/* Pagination */}
         {filteredTickets.length > 0 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-slate-800/80 bg-slate-950/30 text-xs text-slate-400">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-slate-800/80 bg-slate-900/90 text-xs text-slate-400 select-none">
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2">
+                <span className="text-slate-400 font-medium">Ver:</span>
+                <select
+                  value={table.getState().pagination.pageSize}
+                  onChange={(e) => table.setPageSize(Number(e.target.value))}
+                  className="rounded-lg border border-slate-700/80 bg-slate-800/90 px-2 py-1 text-xs text-slate-200 outline-none focus:border-blue-500 transition cursor-pointer"
+                >
+                  {[10, 20, 50].map((size) => (
+                    <option key={size} value={size}>
+                      {size} por página
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <span className="text-slate-700 hidden sm:inline">•</span>
               <span>
                 Página <strong className="text-slate-200">{table.getState().pagination.pageIndex + 1}</strong> de{' '}
-                <strong className="text-slate-200">{table.getPageCount() || 1}</strong>
+                <strong className="text-slate-200">{table.getPageCount() || 1}</strong> ({filteredTickets.length} tickets)
               </span>
-              <span className="text-slate-600">·</span>
-              <span>{filteredTickets.length} tickets</span>
             </div>
 
             <div className="flex items-center gap-1">
               <button
                 onClick={() => table.setPageIndex(0)}
                 disabled={!table.getCanPreviousPage()}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+                title="Primera página"
               >
                 <ChevronsLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+                title="Página anterior"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+                title="Página siguiente"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
               <button
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                className="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+                title="Última página"
               >
                 <ChevronsRight className="h-4 w-4" />
               </button>

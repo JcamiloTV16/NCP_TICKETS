@@ -2,7 +2,23 @@
 
 @layer base {
   html, body {
-    @apply bg-slate-950 text-slate-100 antialiased min-h-screen font-sans;
+    @apply bg-slate-950 text-slate-100 antialiased h-full font-sans;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Scrollbar sutil y moderno para modo oscuro */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.2);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.4);
   }
 }
