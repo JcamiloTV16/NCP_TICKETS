@@ -196,7 +196,7 @@ export const Layout: React.FC = () => {
           style={{
             paddingTop: 'env(safe-area-inset-top, 0px)',
           }}
-          className="flex items-center justify-between min-h-[3.5rem] px-4 border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-xl lg:hidden select-none shrink-0"
+          className="flex items-center justify-between min-h-[3.5rem] px-4 border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-xl lg:hidden select-none shrink-0 relative z-40"
         >
           <button
             onClick={() => setMobileOpen(true)}
@@ -223,7 +223,7 @@ export const Layout: React.FC = () => {
         </header>
 
         {/* Desktop Top Header Bar (Persistente / Fijo) */}
-        <header className="hidden lg:flex items-center justify-between h-16 px-6 sm:px-8 border-b border-slate-800/80 bg-slate-900/50 backdrop-blur-xl shrink-0 select-none">
+        <header className="hidden lg:flex items-center justify-between h-16 px-6 sm:px-8 border-b border-slate-800/80 bg-slate-900/50 backdrop-blur-xl shrink-0 select-none relative z-40">
           {/* Status & Breadcrumb */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/60 border border-slate-700/40 text-xs text-slate-300">

@@ -90,7 +90,7 @@ export const NotificationBell: React.FC<{ align?: 'right' | 'left' }> = ({ align
   const showPushPrompt = isSupported && (!isPushSubscribed || permission !== 'granted');
 
   return (
-    <div className="relative inline-block" ref={dropdownRef}>
+    <div className={`relative inline-block ${isOpen ? 'z-50' : ''}`} ref={dropdownRef}>
       {/* Botón Campana */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -113,7 +113,7 @@ export const NotificationBell: React.FC<{ align?: 'right' | 'left' }> = ({ align
       {/* Popover / Panel de Notificaciones */}
       {isOpen && (
         <div
-          className={`fixed inset-x-3 top-16 sm:absolute sm:inset-auto sm:top-full sm:mt-2.5 w-auto sm:w-[390px] max-w-[calc(100vw-1.5rem)] rounded-2xl border border-slate-800 bg-slate-900/95 backdrop-blur-2xl shadow-2xl shadow-black/80 z-50 overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[520px] transition-all animate-in fade-in-0 zoom-in-95 duration-150 ${
+          className={`fixed inset-x-3 top-16 sm:absolute sm:inset-auto sm:top-full sm:mt-2.5 w-auto sm:w-[390px] max-w-[calc(100vw-1.5rem)] rounded-2xl border border-slate-800 bg-slate-900/95 backdrop-blur-2xl shadow-2xl shadow-black/80 z-[100] overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[520px] transition-all animate-in fade-in-0 zoom-in-95 duration-150 ${
             align === 'left' ? 'sm:left-0 sm:right-auto' : 'sm:right-0 sm:left-auto'
           }`}
         >
