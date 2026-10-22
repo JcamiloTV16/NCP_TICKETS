@@ -4,10 +4,12 @@ Gestiona el ciclo de vida de PushSubscription y el envío cifrado mediante pyweb
 """
 
 import asyncio
+import base64
 import json
 import logging
 import re
 
+from cryptography.hazmat.primitives import serialization
 from py_vapid import Vapid
 from pywebpush import WebPushException, webpush
 from sqlalchemy import delete, select
@@ -53,7 +55,32 @@ def _get_vapid() -> Vapid:
         _vapid_instance = Vapid.from_file(settings.VAPID_PRIVATE_KEY_PATH)
         logger.info(f"[PUSH] Clave VAPID cargada desde archivo {settings.VAPID_PRIVATE_KEY_PATH}")
 
+    derived = _derive_public_key(_vapid_instance)
+    configured = (settings.VAPID_PUBLIC_KEY or "").strip().strip('"').strip("'")
+    if configured and configured != derived:
+        logger.warning(
+            "[PUSH] VAPID_PUBLIC_KEY configurada NO corresponde a VAPID_PRIVATE_KEY. "
+            f"Se usará la derivada de la privada: {derived}"
+        )
+
     return _vapid_instance
+
+
+def _derive_public_key(vapid: Vapid) -> str:
+    """Clave pública (punto P-256 sin comprimir, base64url sin padding) derivada de la privada."""
+    raw = vapid.public_key.public_bytes(
+        encoding=serialization.Encoding.X962,
+        format=serialization.PublicFormat.UncompressedPoint,
+    )
+    return base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
+
+
+def get_vapid_public_key() -> str:
+    """
+    Fuente única de verdad para el applicationServerKey del navegador.
+    Siempre se deriva de la clave privada cargada, evitando VapidPkHashMismatch.
+    """
+    return _derive_public_key(_get_vapid())
 
 
 async def save_or_update_subscription(
@@ -170,9 +197,17 @@ async def send_push_notification_to_user(
             logger.warning(
                 f"[PUSH FALLÓ] Error enviando a Sub ID {sub.id} (Usuario {usuario_id}): {exc}"
             )
-            # HTTP 404 o 410 indican suscripción expirada o permiso revocado en el navegador
+            # HTTP 404 o 410 indican suscripción expirada o permiso revocado en el navegador.
+            # 400 VapidPkHashMismatch (FCM) / 403 (Mozilla/Apple) indican que la suscripción
+            # se creó con otra clave pública VAPID: nunca volverá a funcionar, se purga.
             response_code = getattr(getattr(exc, "response", None), "status_code", None)
-            if response_code in (404, 410) or "410 Gone" in str(exc) or "404 Not Found" in str(exc):
+            exc_text = str(exc)
+            if (
+                response_code in (403, 404, 410)
+                or "410 Gone" in exc_text
+                or "404 Not Found" in exc_text
+                or "VapidPkHashMismatch" in exc_text
+            ):
                 logger.info(f"[PUSH] Marcando endpoint revocado para eliminación: {sub.endpoint[:40]}...")
                 expired_endpoints.append(sub.endpoint)
         except Exception as exc:

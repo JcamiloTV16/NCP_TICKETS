@@ -107,6 +107,19 @@ export function useNotifications() {
 
       // Crear o recuperar suscripción en PushManager
       let sub = await reg.pushManager.getSubscription();
+
+      // Si la suscripción existente se creó con otra clave VAPID (rotación), se descarta y se recrea
+      if (sub?.options.applicationServerKey) {
+        const current = new Uint8Array(sub.options.applicationServerKey);
+        const sameKey =
+          current.length === convertedVapidKey.length &&
+          current.every((b, i) => b === convertedVapidKey[i]);
+        if (!sameKey) {
+          await sub.unsubscribe();
+          sub = null;
+        }
+      }
+
       if (!sub) {
         sub = await reg.pushManager.subscribe({
           userVisibleOnly: true,

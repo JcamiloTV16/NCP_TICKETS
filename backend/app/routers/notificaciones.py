@@ -32,7 +32,12 @@ settings = get_settings()
     description="Retorna la clave pública para que el navegador/PWA del usuario se suscriba al servicio Push.",
 )
 async def get_vapid_public_key():
-    return VapidPublicKeyResponse(public_key=settings.VAPID_PUBLIC_KEY)
+    try:
+        public_key = push_service.get_vapid_public_key()
+    except Exception:
+        # Sin clave privada válida no se puede firmar; se devuelve la configurada como último recurso
+        public_key = settings.VAPID_PUBLIC_KEY
+    return VapidPublicKeyResponse(public_key=public_key)
 
 
 @router.post(
